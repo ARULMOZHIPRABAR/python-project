@@ -1,0 +1,98 @@
+class Library:
+    def __init__(self):
+        self.books = {}
+        self.members = {}
+        self.issued_books = {}
+
+    def add_book(self):
+        book_id = input("Enter book ID: ")
+        title = input("Enter book title: ")
+        author = input("Enter book author: ")
+        copies = int(input("Enter number of copies: "))
+        self.books[book_id] = {"title": title, "author": author, "copies": copies}
+        print(f"Book '{title}' added successfully.")
+
+    def add_member(self):
+        member_id = input("Enter member ID: ")
+        name = input("Enter member name: ")
+        self.members[member_id] = {"name": name, "books_issued": []}
+        print(f"Member '{name}' added successfully.")
+
+    def issue_book(self):
+        member_id = input("Enter member ID: ")
+        book_id = input("Enter book ID: ")
+
+        if book_id not in self.books:
+            print("Book ID not found.")
+            return
+
+        if member_id not in self.members:
+            print("Member ID not found.")
+            return
+
+        if self.books[book_id]["copies"] == 0:
+            print("No copies left to issue.")
+            return
+
+        self.books[book_id]["copies"] -= 1
+        self.members[member_id]["books_issued"].append(book_id)
+        self.issued_books[book_id] = member_id
+        print(f"Book '{self.books[book_id]['title']}' issued to '{self.members[member_id]['name']}'.")
+
+    def return_book(self):
+        book_id = input("Enter book ID: ")
+
+        if book_id not in self.issued_books:
+            print("Book ID not found in issued books.")
+            return
+
+        member_id = self.issued_books.pop(book_id)
+        self.books[book_id]["copies"] += 1
+        self.members[member_id]["books_issued"].remove(book_id)
+        print(f"Book '{self.books[book_id]['title']}' returned by '{self.members[member_id]['name']}'.")
+
+    def view_books(self):
+        print("\nBooks in Library:")
+        for book_id, details in self.books.items():
+            print(f"ID: {book_id}, Title: {details['title']}, Author: {details['author']}, Copies: {details['copies']}")
+
+    def view_members(self):
+        print("\nLibrary Members:")
+        for member_id, details in self.members.items():
+            print(f"ID: {member_id}, Name: {details['name']}, Books Issued: {details['books_issued']}")
+
+def main():
+    library = Library()
+
+    while True:
+        print("\nLibrary Management System")
+        print("1. Add Book")
+        print("2. Add Member")
+        print("3. Issue Book")
+        print("4. Return Book")
+        print("5. View Books")
+        print("6. View Members")
+        print("7. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            library.add_book()
+        elif choice == '2':
+            library.add_member()
+        elif choice == '3':
+            library.issue_book()
+        elif choice == '4':
+            library.return_book()
+        elif choice == '5':
+            library.view_books()
+        elif choice == '6':
+            library.view_members()
+        elif choice == '7':
+            print("Exiting the system. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
